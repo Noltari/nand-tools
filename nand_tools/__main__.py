@@ -2,10 +2,9 @@
 """NAND Tools."""
 
 import argparse
-import logging
-import sys
 
 from .common import auto_int
+from .logger import INFO
 from .nand import NAND
 
 
@@ -87,6 +86,7 @@ def main():
         return
 
     nand = NAND(
+        logger_level=INFO,
         block_size=args.block_size,
         file=args.input_file,
         oob_size=args.oob_size,
@@ -103,5 +103,4 @@ def main():
         )
 
 
-logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(message)s")
 main()

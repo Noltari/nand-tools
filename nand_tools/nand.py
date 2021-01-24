@@ -1,20 +1,28 @@
 # -*- coding: utf-8 -*-
 """NAND."""
 
-import logging
 import os
+import sys
 
 from .common import convert_size
-
-_LOGGER = logging.getLogger(__name__)
+from .logger import INFO, Logger
 
 
 class NAND:
     """NAND."""
 
-    # pylint: disable=too-many-instance-attributes
-    def __init__(self, file, oob_size, page_size, block_size=None):
+    # pylint: disable=too-many-arguments,too-many-instance-attributes
+    def __init__(
+        self,
+        file,
+        oob_size,
+        page_size,
+        block_size=None,
+        logger_level=INFO,
+        logger_stream=sys.stdout,
+    ):
         """Init NAND Tools."""
+        self.log = Logger(level=logger_level, stream=logger_stream)
         self.block_size = block_size
         self.file = file
         self.oob_size = oob_size
@@ -39,7 +47,7 @@ class NAND:
     def remove_oob(self, output_file, skip_erased=False):
         """Remove NAND OOB."""
         if (self.raw_size % self.raw_page_size) != 0:
-            _LOGGER.error(
+            self.log.error(
                 "file size (%d) has to be a multiple of %d",
                 self.raw_size,
                 self.raw_page_size,
@@ -70,11 +78,11 @@ class NAND:
                 if list(page_bytes) == erased_page_bytes:
                     erased_blocks += 1
                     block_skip = skip_erased
-                    _LOGGER.debug("Erased block %d/%d", blck_cnt, self.num_blocks)
+                    self.log.debug("Erased block %d/%d\n", blck_cnt, self.num_blocks)
 
             progress = int(round(page * 100 / self.num_pages, 0))
             if progress != last_progress:
-                _LOGGER.info("Removing OOB: %d%%...", progress)
+                self.log.info("Removing OOB: %d%%...\r", progress)
                 last_progress = progress
 
             if block_skip:
@@ -87,10 +95,12 @@ class NAND:
                 if self.block_size:
                     block_offset = (block_offset + self.page_size) % (self.block_size)
 
+        self.log.info("\n")
+
         if self.block_size:
             erase_percent = int(round(erased_blocks * 100 / self.num_blocks, 0))
-            _LOGGER.info(
-                "Erased blocks: %d/%d (%d%%)",
+            self.log.info(
+                "Erased blocks: %d/%d (%d%%)\n",
                 erased_blocks,
                 self.num_blocks,
                 erase_percent,
@@ -102,25 +112,25 @@ class NAND:
     def show_info(self):
         """Show NAND info."""
         separator = "--------------------"
-        _LOGGER.info("NAND Info:")
-        _LOGGER.info("\tRaw Size: %s", convert_size(self.raw_size))
-        _LOGGER.info("\tSize: %s", convert_size(self.size))
+        self.log.info("NAND Info:\n")
+        self.log.info("\tRaw Size: %s\n", convert_size(self.raw_size))
+        self.log.info("\tSize: %s\n", convert_size(self.size))
 
-        _LOGGER.info("\t%s", separator)
-        _LOGGER.info("\tTotal Pages: %d", self.num_pages)
+        self.log.info("\t%s\n", separator)
+        self.log.info("\tTotal Pages: %d\n", self.num_pages)
         if self.num_blocks:
-            _LOGGER.info("\tTotal Blocks: %d", self.num_blocks)
+            self.log.info("\tTotal Blocks: %d\n", self.num_blocks)
         if self.block_pages:
-            _LOGGER.info("\tBlock Pages: %d", self.block_pages)
+            self.log.info("\tBlock Pages: %d\n", self.block_pages)
 
         if self.block_size:
-            _LOGGER.info("\t%s", separator)
-            _LOGGER.info("\tRaw Block Size: %s", convert_size(self.raw_block_size))
-            _LOGGER.info("\tBlock Size: %s", convert_size(self.block_size))
+            self.log.info("\t%s\n", separator)
+            self.log.info("\tRaw Block Size: %s\n", convert_size(self.raw_block_size))
+            self.log.info("\tBlock Size: %s\n", convert_size(self.block_size))
 
-        _LOGGER.info("\t%s", separator)
-        _LOGGER.info("\tOOB Size: %d", self.oob_size)
+        self.log.info("\t%s\n", separator)
+        self.log.info("\tOOB Size: %d\n", self.oob_size)
 
-        _LOGGER.info("\t%s", separator)
-        _LOGGER.info("\tRaw Page size: %d", self.raw_page_size)
-        _LOGGER.info("\tPage size: %d", self.page_size)
+        self.log.info("\t%s\n", separator)
+        self.log.info("\tRaw Page size: %d\n", self.raw_page_size)
+        self.log.info("\tPage size: %d\n", self.page_size)
