@@ -14,6 +14,14 @@ def main():
     parser = argparse.ArgumentParser(description="")
 
     parser.add_argument(
+        "--block-size",
+        dest="block_size",
+        action="store",
+        type=auto_int,
+        help="Block Size",
+    )
+
+    parser.add_argument(
         "--input-file",
         dest="input_file",
         action="store",
@@ -45,6 +53,13 @@ def main():
         help="Page Size",
     )
 
+    parser.add_argument(
+        "--skip-erased",
+        dest="skip_erased",
+        action="store_true",
+        help="Skip erased blocks",
+    )
+
     args = parser.parse_args()
 
     if (
@@ -52,16 +67,21 @@ def main():
         or (not args.oob_size)
         or (not args.output_file)
         or (not args.page_size)
+        or (not args.block_size and args.skip_erased)
     ):
         parser.print_help()
 
     nand = NAND(
+        block_size=args.block_size,
         file=args.input_file,
         oob_size=args.oob_size,
         page_size=args.page_size,
     )
     nand.show_info()
-    nand.remove_oob(output_file=args.output_file)
+    nand.remove_oob(
+        output_file=args.output_file,
+        skip_erased=args.skip_erased,
+    )
 
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(message)s")

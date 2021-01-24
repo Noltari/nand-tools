@@ -14,6 +14,14 @@ def main():
     parser = argparse.ArgumentParser(description="")
 
     parser.add_argument(
+        "--block-size",
+        dest="block_size",
+        action="store",
+        type=auto_int,
+        help="Block Size",
+    )
+
+    parser.add_argument(
         "--input-file",
         dest="input_file",
         action="store",
@@ -43,6 +51,7 @@ def main():
         parser.print_help()
 
     nand = NAND(
+        block_size=args.block_size,
         file=args.input_file,
         oob_size=args.oob_size,
         page_size=args.page_size,
