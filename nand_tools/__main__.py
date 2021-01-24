@@ -38,14 +38,6 @@ def main():
     )
 
     parser.add_argument(
-        "--output-file",
-        dest="output_file",
-        action="store",
-        type=str,
-        help="Output file",
-    )
-
-    parser.add_argument(
         "--page-size",
         dest="page_size",
         action="store",
@@ -70,8 +62,9 @@ def main():
     parser.add_argument(
         "--remove-oob",
         dest="remove_oob",
-        action="store_true",
-        help="Remove OOB",
+        action="store",
+        type=str,
+        help="Remove OOB (output file)",
     )
 
     args = parser.parse_args()
@@ -81,12 +74,10 @@ def main():
             parser.print_help()
             return
     if args.remove_oob:
-        # pylint: disable-msg=too-many-boolean-expressions
         if (
             (not args.input_file)
             or (not args.page_size)
             or (not args.oob_size)
-            or (not args.output_file)
             or (not args.block_size and args.skip_erased)
         ):
             parser.print_help()
@@ -107,7 +98,7 @@ def main():
 
     if args.remove_oob:
         nand.remove_oob(
-            output_file=args.output_file,
+            output_file=args.remove_oob,
             skip_erased=args.skip_erased,
         )
 
