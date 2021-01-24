@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""NAND Tools."""
+"""NAND."""
 
 import logging
 import os
@@ -10,7 +10,7 @@ _LOGGER = logging.getLogger(__name__)
 
 
 class NAND:
-    """NAND Tools."""
+    """NAND."""
 
     # pylint: disable=too-many-instance-attributes
     def __init__(self, file, oob_size, page_size, block_size=None):

@@ -31,7 +31,7 @@ jobs:
 
       - name: Run Black
         run: |
-          black --check --diff nand_tools/*.py *.py
+          black --check --diff nand_tools
 
   flake8:
     name: Check Flake8
@@ -56,7 +56,7 @@ jobs:
 
       - name: Run Flake8
         run: |
-          flake8 nand_tools/*.py *.py
+          flake8 nand_tools
 
   isort:
     name: Check isort
@@ -81,7 +81,7 @@ jobs:
 
       - name: Run isort
         run: |
-          isort --check-only nand_tools/*.py *.py
+          isort --check-only nand_tools
 
   mypy:
     name: Check Mypy
@@ -106,7 +106,7 @@ jobs:
 
       - name: Run mypy
         run: |
-          mypy nand_tools/*.py *.py
+          mypy nand_tools
 
   pylint:
     name: Check Pylint (Python ${{ matrix.python-version }})
@@ -138,4 +138,4 @@ jobs:
 
       - name: Run Pylint
         run: |
-          pylint nand_tools/*.py
+          pylint nand_tools

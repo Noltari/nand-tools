@@ -1,16 +1,16 @@
 #!/usr/bin/env python3
-"""NAND OOB Remover."""
+"""NAND Tools."""
 
 import argparse
 import logging
 import sys
 
-from nand_tools.common import auto_int
-from nand_tools.nand import NAND
+from .common import auto_int
+from .nand import NAND
 
 
 def main():
-    """NAND OOB Remover."""
+    """NAND Tools."""
     parser = argparse.ArgumentParser(description="")
 
     parser.add_argument(
@@ -54,22 +54,46 @@ def main():
     )
 
     parser.add_argument(
+        "--show-info",
+        dest="show_info",
+        action="store_true",
+        help="Show NAND info",
+    )
+
+    parser.add_argument(
         "--skip-erased",
         dest="skip_erased",
         action="store_true",
         help="Skip erased blocks",
     )
 
+    parser.add_argument(
+        "--remove-oob",
+        dest="remove_oob",
+        action="store_true",
+        help="Remove OOB",
+    )
+
     args = parser.parse_args()
 
-    if (
-        (not args.input_file)
-        or (not args.oob_size)
-        or (not args.output_file)
-        or (not args.page_size)
-        or (not args.block_size and args.skip_erased)
-    ):
+    if args.show_info:
+        if (not args.input_file) or (not args.page_size) or (not args.oob_size):
+            parser.print_help()
+            return
+    if args.remove_oob:
+        # pylint: disable-msg=too-many-boolean-expressions
+        if (
+            (not args.input_file)
+            or (not args.page_size)
+            or (not args.oob_size)
+            or (not args.output_file)
+            or (not args.block_size and args.skip_erased)
+        ):
+            parser.print_help()
+            return
+    if (not args.show_info) and (not args.remove_oob):
         parser.print_help()
+        return
 
     nand = NAND(
         block_size=args.block_size,
@@ -77,11 +101,15 @@ def main():
         oob_size=args.oob_size,
         page_size=args.page_size,
     )
-    nand.show_info()
-    nand.remove_oob(
-        output_file=args.output_file,
-        skip_erased=args.skip_erased,
-    )
+
+    if args.show_info:
+        nand.show_info()
+
+    if args.remove_oob:
+        nand.remove_oob(
+            output_file=args.output_file,
+            skip_erased=args.skip_erased,
+        )
 
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO, format="%(message)s")
