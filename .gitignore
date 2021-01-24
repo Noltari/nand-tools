@@ -1,2 +1,3 @@
 *.bin
+*.extracted
 __pycache__
