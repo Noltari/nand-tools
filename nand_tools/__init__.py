@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
 """NAND Tools."""
-from .nand import NAND
+from .nand import NandTools
 
-__all__ = ["NAND"]
+__all__ = ["NandTools"]

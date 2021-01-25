@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""NAND."""
+"""NAND Tools library."""
 
 import os
 import sys
@@ -8,8 +8,8 @@ from .common import convert_size
 from .logger import INFO, Logger
 
 
-class NAND:
-    """NAND."""
+class NandTools:
+    """NAND Tools library."""
 
     # pylint: disable=too-many-arguments,too-many-instance-attributes
     def __init__(
@@ -45,7 +45,7 @@ class NAND:
 
     # pylint: disable=too-many-locals
     def remove_oob(self, output_file, skip_erased=False):
-        """Remove NAND OOB."""
+        """Remove OOB from NAND."""
         if (self.raw_size % self.raw_page_size) != 0:
             self.log.error(
                 "file size (%d) has to be a multiple of %d",

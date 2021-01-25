@@ -5,7 +5,7 @@ import argparse
 
 from .common import auto_int
 from .logger import INFO
-from .nand import NAND
+from .nand import NandTools
 
 
 def main():
@@ -85,7 +85,7 @@ def main():
         parser.print_help()
         return
 
-    nand = NAND(
+    nand = NandTools(
         logger_level=INFO,
         block_size=args.block_size,
         file=args.input_file,
